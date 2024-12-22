@@ -29,7 +29,7 @@ app.use(session({
     saveUninitialized: true
 }));
 
-const port = 3000;
+const port = 3300;
 
 app.get('/', (req, res) => {
     if (req.session.loggedin) {

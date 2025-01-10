@@ -121,6 +121,18 @@ app.get('/allLinks', (req, res) => {
     }
 });
 
+app.get('/manageLinks', (req, res) => {
+    if (req.session.loggedin) {
+        let rawdata = fs.readFileSync('public/links.json');
+        let links = JSON.parse(rawdata);
+        res.render(__dirname + '/views/manageLinks.ejs',
+            {
+                links: links
+            }
+        );
+    }
+})
+
 
 
 app.get('/:short', (req, res) => {
@@ -137,6 +149,9 @@ app.get('/:short', (req, res) => {
     // open a new tab with the link
     res.redirect(link);
 });
+
+
+
 
 
 

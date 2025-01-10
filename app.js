@@ -47,11 +47,8 @@ app.get('/logout', (req, res) => {
 app.post('/auth', (req, res) => {
     let username = req.body.username;
     let hashPassword = req.body.password;
-    console.log(username, hashPassword);
     if (username && hashPassword) {
-        console.log(process.env.ADMINUSERNAME)
         if (username === process.env.ADMINUSERNAME && hashPassword === process.env.PASSWORD) {
-            console.log('logged in');
             req.session.loggedin = true;
             req.session.username = username;
             res.redirect('/addLink');
@@ -83,7 +80,6 @@ app.get('/addLink', (req, res) => {
 });
 
 app.get('/linkExists/:shortLink', (req, res) => {
-    // read the links.json file
     let rawdata = fs.readFileSync('public/links.json');
     let links = JSON.parse(rawdata);
     let shortLink = req.params.shortLink;
@@ -93,7 +89,12 @@ app.get('/linkExists/:shortLink', (req, res) => {
             linkExists = true;
         }
     });
-    res.send(linkExists);
+    if (linkExists) {
+        res.status(405).send('Link exist');
+
+    } else {
+        res.send(linkExists);
+    }
 });
 
 
@@ -124,18 +125,37 @@ app.get('/allLinks', (req, res) => {
 app.get('/manageLinks', (req, res) => {
     if (req.session.loggedin) {
         let rawdata = fs.readFileSync('public/links.json');
+        let domainData = fs.readFileSync('public/domainName.json');
+        let domain = JSON.parse(domainData);
         let links = JSON.parse(rawdata);
         res.render(__dirname + '/views/manageLinks.ejs',
             {
-                links: links
+                links: links,
+                domain: domain.domain
             }
         );
     }
+    else {
+        res.redirect('/');
+    }
 })
 
+app.post('/deleteLink/:short', (req, res) => {
+    if (req.session.loggedin) {
+        let short = req.params.short;
+        let rawdata = fs.readFileSync('public/links.json');
+        let links = JSON.parse(rawdata);
+        let newLinks = links.filter(link => link.short !== short);
+        fs.writeFileSync('public/links.json', JSON.stringify(newLinks));
+        res.send('Link deleted successfully');
+    } else {
+        res.redirect('/');
+    }
+});
 
 
-app.get('/:short', (req, res) => {
+
+app.get('/l/:short', (req, res) => {
     let short = req.params.short;
     let rawdata = fs.readFileSync('public/links.json');
     let links = JSON.parse(rawdata);

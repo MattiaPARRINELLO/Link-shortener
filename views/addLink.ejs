@@ -86,7 +86,7 @@
           const linkName = this.value;
           document.getElementById(
             "linkPreview"
-          ).textContent = `domain.com/${linkName}`;
+          ).textContent = `<%=domain%>/${linkName}`;
           linkExists();
         });
 
@@ -110,39 +110,29 @@
 
       function isLinkNameValid() {
         const longLink = document.getElementById("longLink").value;
-        const urlPattern = new RegExp(
-          "^(https?:\\/\\/)?" + // protocol
-            "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|" + // domain name
-            "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-            "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
-            "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-            "(\\#[-a-z\\d_]*)?$",
-          "i" // fragment locator
+        var res = longLink.match(
+          /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g
         );
-        return !!urlPattern.test(longLink);
+        return res !== null;
       }
 
       function linkExists() {
         const linkName = document.getElementById("linkName").value;
-        fetch(`/linkExists/${linkName}`)
-          .then((response) => response.json())
-          .then((data) => {
-            if (data) {
-              const button = document.querySelector(".container button");
-              button.disabled = true;
-              button.style.backgroundColor = "gray";
-              button.style.transition = "background-color 0.3s";
-              document.getElementById("linkName").style.border =
-                "2px solid red";
-            } else {
-              const button = document.querySelector(".container button");
-              button.disabled = false;
-              button.style.backgroundColor = "#007bff";
-              document.getElementById("linkName").style.border =
-                "2px solid #007bff";
-            }
-          })
-          .catch((error) => console.error("Error:", error));
+        fetch(`/linkExists/${linkName}`).then((response) => {
+          if (response.status != 405) {
+            const button = document.querySelector(".container button");
+            button.disabled = false;
+            button.style.backgroundColor = "#007bff";
+            document.getElementById("linkName").style.border =
+              "2px solid #007bff";
+          } else {
+            const button = document.querySelector(".container button");
+            button.disabled = true;
+            button.style.backgroundColor = "gray";
+            button.style.transition = "background-color 0.3s";
+            document.getElementById("linkName").style.border = "2px solid red";
+          }
+        });
       }
 
       function createShortLink() {
@@ -157,13 +147,11 @@
         fetch(`/addLink/${longLink}/${linkName}`, {
           method: "POST",
         }).then((response) => {
-          if (response.redirected) {
-            window.location.href = response.url;
+          if (response.status === 200) {
+            window.location.href = "https://" + longLink;
           }
         });
       }
-
-      function submit() {}
     </script>
   </body>
 </html>

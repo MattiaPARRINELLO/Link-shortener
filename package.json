@@ -7,6 +7,17 @@
     "dev": "nodemon app.js",
     "start": "node app.js"
   },
+  "nodemonConfig": {
+    "verbose": true,
+    "watch": [
+      "app.js"
+    ],
+    "ignore": [
+      "public/*",
+      "views/*",
+      "node_modules/*"
+    ]
+  },
   "author": "",
   "license": "ISC",
   "description": "",

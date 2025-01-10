@@ -140,17 +140,13 @@ app.get('/manageLinks', (req, res) => {
     }
 })
 
-app.post('/deleteLink/:short', (req, res) => {
-    if (req.session.loggedin) {
-        let short = req.params.short;
-        let rawdata = fs.readFileSync('public/links.json');
-        let links = JSON.parse(rawdata);
-        let newLinks = links.filter(link => link.short !== short);
-        fs.writeFileSync('public/links.json', JSON.stringify(newLinks));
-        res.send('Link deleted successfully');
-    } else {
-        res.redirect('/');
-    }
+app.get('/deleteLink/:short', (req, res) => {
+    let short = req.params.short;
+    let rawdata = fs.readFileSync('public/links.json');
+    let links = JSON.parse(rawdata);
+    let newLinks = links.filter(link => link.short !== short);
+    fs.writeFileSync('public/links.json', JSON.stringify(newLinks));
+    res.send('Link deleted successfully');
 });
 
 

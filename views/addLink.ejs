@@ -90,23 +90,39 @@
           linkExists();
         });
 
+      document.getElementById("longLink").addEventListener("input", validate());
       document
         .getElementById("longLink")
-        .addEventListener("input", function () {
-          if (!isLinkNameValid()) {
-            const button = document.querySelector(".container button");
-            button.disabled = true;
-            button.style.backgroundColor = "gray";
-            button.style.transition = "background-color 0.3s";
-            document.getElementById("longLink").style.border = "2px solid red";
-          } else {
-            const button = document.querySelector(".container button");
-            button.disabled = false;
-            button.style.backgroundColor = "#007bff";
-            document.getElementById("longLink").style.border =
-              "2px solid #007bff";
+        .addEventListener("keypress", function (event) {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            createShortLink();
           }
         });
+
+      document
+        .getElementById("linkName")
+        .addEventListener("keypress", function (event) {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            createShortLink();
+          }
+        });
+      function validate() {
+        if (!isLinkNameValid()) {
+          const button = document.querySelector(".container button");
+          button.disabled = true;
+          button.style.backgroundColor = "gray";
+          button.style.transition = "background-color 0.3s";
+          document.getElementById("longLink").style.border = "2px solid red";
+        } else {
+          const button = document.querySelector(".container button");
+          button.disabled = false;
+          button.style.backgroundColor = "#007bff";
+          document.getElementById("longLink").style.border =
+            "2px solid #007bff";
+        }
+      }
 
       function isLinkNameValid() {
         const longLink = document.getElementById("longLink").value;

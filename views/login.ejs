@@ -150,6 +150,38 @@
     }
   });
 
+  document.querySelectorAll(".input-group input").forEach((input) => {
+    input.addEventListener("keypress", async (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        console.log("Enter pressed");
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        if (username && password) {
+          const hashedPassword = await hashPassword(password);
+
+          fetch("/auth", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username,
+              password: hashedPassword,
+            }),
+          }).then((res) => {
+            if (res.redirected) {
+              window.location.href = res.url;
+            }
+          });
+        } else {
+          alert("Please fill in all fields");
+        }
+      }
+    });
+  });
+
   async function hashPassword(pass) {
     const msgUint8 = new TextEncoder().encode(pass);
     const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);

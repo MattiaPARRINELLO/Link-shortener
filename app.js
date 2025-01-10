@@ -99,10 +99,10 @@ app.get('/linkExists/:shortLink', (req, res) => {
 
 
 
-app.post('/addLink/:link/:short', (req, res) => {
-    let link = req.params.link;
-    // add http:// to the link
-    link = 'https://' + link
+app.post('/addLink/:short', (req, res) => {
+    let longLink = req.query.lonklink;
+    longLink = longLink.replace(/"/g, '');
+    let link = 'https://' + longLink
     let short = req.params.short;
     console.log(link, short);
     let rawdata = fs.readFileSync('public/links.json');
@@ -145,7 +145,7 @@ app.get('/deleteLink/:short', (req, res) => {
     let rawdata = fs.readFileSync('public/links.json');
     let links = JSON.parse(rawdata);
     let newLinks = links.filter(link => link.short !== short);
-    fs.writeFileSync('public/links.json', JSON.stringify(newLinks));
+    fs.writeFileSyncg('public/links.json', JSON.stringify(newLinks));
     res.send('Link deleted successfully');
 });
 

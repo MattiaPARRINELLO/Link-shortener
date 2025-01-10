@@ -160,7 +160,7 @@
           longLink = longLink.slice(7);
         }
         // make a POST request to /addLink/longLink/linkName
-        fetch(`/addLink/${longLink}/${linkName}`, {
+        fetch(`/addLink/${linkName}?lonklink="${longLink}"`, {
           method: "POST",
         }).then((response) => {
           if (response.status === 200) {

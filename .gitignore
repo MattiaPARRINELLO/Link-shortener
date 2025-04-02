@@ -1,4 +1,8 @@
 .env
+.env
+
 /node_modules
 public/domainName.json
 public/links.json
+public/links.json
+public/domainName.json

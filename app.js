@@ -1,15 +1,10 @@
 // set up a express server
+const dotenv = require('dotenv').config();
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const session = require('express-session');
 const bodyParser = require('body-parser');
-const dotenv = require('dotenv');
-
-dotenv.config();
-
-
-
 
 const app = express();
 
@@ -31,6 +26,7 @@ app.use(session({
 
 const port = 3300;
 
+
 app.get('/', (req, res) => {
     if (req.session.loggedin) {
         return;
@@ -48,7 +44,10 @@ app.post('/auth', (req, res) => {
     let username = req.body.username;
     let hashPassword = req.body.password;
     if (username && hashPassword) {
+        console.log(username, hashPassword);
+        console.log(process.env.ADMINUSERNAME, process.env.PASSWORD);
         if (username === process.env.ADMINUSERNAME && hashPassword === process.env.PASSWORD) {
+            console.log("Ca marche bg")
             req.session.loggedin = true;
             req.session.username = username;
             res.redirect('/addLink');
@@ -151,7 +150,7 @@ app.get('/deleteLink/:short', (req, res) => {
 
 
 
-app.get('/l/:short', (req, res) => {
+app.get('/:short', (req, res) => {
     let short = req.params.short;
     let rawdata = fs.readFileSync('public/links.json');
     let links = JSON.parse(rawdata);

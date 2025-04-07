@@ -144,7 +144,7 @@ app.get('/deleteLink/:short', (req, res) => {
     let rawdata = fs.readFileSync('public/links.json');
     let links = JSON.parse(rawdata);
     let newLinks = links.filter(link => link.short !== short);
-    fs.writeFileSyncg('public/links.json', JSON.stringify(newLinks));
+    fs.writeFileSync('public/links.json', JSON.stringify(newLinks));
     res.send('Link deleted successfully');
 });
 
